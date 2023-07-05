@@ -1,0 +1,75 @@
+﻿@model IEnumerable<WebApplicationEmail.Models.Correo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Bandeja de Entrada</h1>
+
+<p>
+    <a asp-action="Create">Crear Correo</a>
+</p>
+<p>
+    <a asp-controller="Correos" asp-action="Enviados">Correos Enviados</a>
+</p>
+<form asp-controller="Correos" asp-action="Index">
+    <div class="form-group">
+        <label class="control-label">Para:</label>
+        <select name="remitente" class="form-control" asp-items="ViewBag.Remi"><option value="">Todos</option></select>
+    </div>
+    <p>
+        Asunto/Contenido: <input type="text" name="Search" />
+        <input type="submit" value="Buscar" />
+    </p>
+</form>
+<a asp-controller="Home" asp-action="Index">Todos los Correos</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Asunto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contenido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Remitente)
+            </th>
+            <th>
+                Fue leido
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Asunto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contenido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remitente.Nombre)
+            </td>
+                
+                @if (item.CorreoPersonas[0].Leido && item.CorreoPersonas[0].PersonaId == ViewBag.idUser)
+                {
+                    <td>
+                        Si
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        No
+                    </td>
+                }
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Ver</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

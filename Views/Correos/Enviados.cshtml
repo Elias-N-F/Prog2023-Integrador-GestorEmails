@@ -1,0 +1,63 @@
+﻿@model IEnumerable<WebApplicationEmail.Models.Correo>
+
+@{
+    ViewData["Title"] = "Enviados";
+}
+
+<h1>Enviados</h1>
+
+<p>
+    <a asp-action="Create">Crear Correo</a>
+</p>
+<form asp-controller="Correos" asp-action="Enviados">
+    <div class="form-group">
+        <label class="control-label">Para:</label>
+        <select name="remitente" class="form-control" asp-items="ViewBag.Remi"><option value="">Todos</option></select>
+    </div>
+    <p>
+        Asunto/Contenido: <input type="text" name="Search" />
+        <input type="submit" value="Buscar" />
+    </p>
+</form>
+<a asp-controller="Home" asp-action="Enviados">Todos los Correos</a>
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Asunto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contenido)
+            </th>
+            <th>
+               Enviado a
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Asunto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contenido)
+            </td>
+            <td>
+                @foreach (var cp in item.CorreoPersonas)
+                {
+                    @Html.DisplayFor(modelItem => cp.PersonaId)
+                    @Html.Raw(",");
+                }
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Ver</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
