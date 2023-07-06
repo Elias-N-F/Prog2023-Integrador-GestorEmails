@@ -40,7 +40,31 @@ namespace WebApplicationEmail.Controllers
             }
             ViewData["Remi"] = new SelectList(_context.Set<Persona>(), "Nombre", "Nombre");
             ViewData["idUser"] = int.Parse(HttpContext.Session.GetString("Id"));
-            return View(await webApplicationEmailContext.ToListAsync());
+
+            var result = await webApplicationEmailContext.ToListAsync();
+
+            var list = new HashSet<int>();
+            await webApplicationEmailContext.ForEachAsync(x => list.Add(x.PersonaId));
+            
+            var persona = await _context.Persona.Where(p => list.Contains(p.Id)).ToListAsync();
+
+            Dictionary<int, Persona> dict = new();
+
+            foreach (var item in result)
+            {
+                var p = persona.Find(x => x.Id == item.PersonaId);
+                if(p != null)
+                {
+                    dict.Add(item.Id, p);
+                }
+            }
+
+            ViewData["personas"] = dict;
+            foreach (var item in persona)
+            {
+                await Console.Out.WriteLineAsync(item.Id +" ,"+item.Nombre );
+            }
+            return View(result);
         }
 
         // GET: Correos/Enviados
@@ -61,7 +85,40 @@ namespace WebApplicationEmail.Controllers
                 webApplicationEmailContext = _context.Correo.Where(c => c.Remitente.Id == id && c.CorreoPersonas.Any(cp => cp.PersonaId == remitente) && (c.Asunto.Contains(search) || c.Contenido.Contains(search))).Include(a => a.Remitente).Include(x => x.CorreoPersonas);
             }
             ViewData["Remi"] = new SelectList(_context.Set<Persona>(), "Id", "Nombre");
-            return View(await webApplicationEmailContext.ToListAsync());
+
+            var result = await webApplicationEmailContext.ToListAsync();
+
+            var list = new List<int>();
+
+            result.ForEach(correo => list.Add(correo.Id));
+
+            var correopersona = await _context.CorreoPersona.Where(x => list.Contains(x.CorreoId)).ToListAsync();
+
+            list.Clear();
+            correopersona.ForEach(cp => list.Add(cp.PersonaId));
+
+            var persona = await _context.Persona.Where(p => list.Contains(p.Id) || p.Id == id).ToListAsync();
+
+            Dictionary<int, Persona> dict = new();
+
+            foreach (var item in correopersona)
+            {
+                var p = persona.Find(x => x.Id == item.PersonaId);
+                if (p != null)
+                {
+                    dict.Add(item.Id, p);
+                }
+                else {
+                    Persona eliminado = new Persona();
+                    eliminado.Nombre = "*Eliminado*";
+                    dict.Add(item.Id, eliminado);
+                }
+            }
+
+
+            ViewData["personas"] = dict;
+
+            return View(result);
         }
 
         // GET: Correos/Details/5

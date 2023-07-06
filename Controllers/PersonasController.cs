@@ -21,6 +21,7 @@ namespace WebApplicationEmail.Controllers
         }
 
         // GET: Personas
+        [Authentication]
         public async Task<IActionResult> Index()
         {
               return _context.Persona != null ? 
@@ -29,6 +30,7 @@ namespace WebApplicationEmail.Controllers
         }
 
         // GET: Personas/Details/5
+        [Authentication]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Persona == null)
@@ -47,6 +49,7 @@ namespace WebApplicationEmail.Controllers
         }
 
         // GET: Personas/Create
+        [Authentication]
         public IActionResult Create()
         {
             return View();
@@ -70,6 +73,7 @@ namespace WebApplicationEmail.Controllers
         }
 
         // GET: Personas/Edit/5
+        [Authentication]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Persona == null)
@@ -96,11 +100,12 @@ namespace WebApplicationEmail.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+
+                    persona.Password = Encrypter.EncryptPassword(persona.Password, persona.Email);
                     _context.Update(persona);
                     await _context.SaveChangesAsync();
                 }
@@ -121,6 +126,7 @@ namespace WebApplicationEmail.Controllers
         }
 
         // GET: Personas/Delete/5
+        [Authentication]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Persona == null)

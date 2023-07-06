@@ -4,11 +4,22 @@
     Layout = null;
     ViewData["Title"] = "Login";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Emails</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplicationEmail.styles.css" asp-append-version="true" />
+</head>
+<body>
 
-<h1>Login</h1>
+<h1 class ="text-center">Login</h1>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+        <div class="col-md-4 offset-md-4">
         <form asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -20,14 +31,23 @@
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                </div>
+                <br />
+                <div class="form-group text-center">
+                    <br />
                 <input type="submit" value="Entrar" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - Emails - Grupo 4
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
